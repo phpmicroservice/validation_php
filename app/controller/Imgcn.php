@@ -1,16 +1,15 @@
 <?php
 
-namespace apps\verify\controllers;
+namespace app\controller;
 
-use core\Sundry\Trace;
-use logic\Common\Verification;
+use app\Controller;
 
 /**
  * 中文图片点击 imgcn
  * Class ImgcnController
  * @package apps\verify\controllers
  */
-class ImgcnController extends CoreController
+class Imgcn extends Controller
 {
     public function initialize()
     {
@@ -21,7 +20,7 @@ class ImgcnController extends CoreController
     /**
      * 获取图形验证码
      */
-    public function getimg()
+    public function getinfo()
     {
 
         $config = [
@@ -33,9 +32,9 @@ class ImgcnController extends CoreController
                 'height' => 200,
             ]
         ];
-        $CAPTCHA = new \core\verify\production($config);
+        $CAPTCHA = new \app\logic\production($config);
         $base64 = $CAPTCHA->getCaptcha();
-        return $this->restful_success($base64);
+        return $this->send($base64);
     }
 
 

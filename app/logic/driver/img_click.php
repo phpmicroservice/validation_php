@@ -1,14 +1,13 @@
 <?php
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
-use core\Sundry\Trace;
 
 /**
  * img_click 图片点击验证码 生成驱动
  * @author Dongasai
  */
-class img_click  implements \core\verify\driver
+class img_click  implements \app\logic\driver
 {
 
     private $width=200;

@@ -1,12 +1,12 @@
 <?php
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
 /**
  * img 图片验证码生成驱动
  * @author Dongasai
  */
-class ajax  implements \core\verify\driver
+class ajax  implements \app\logic\driver
 {
 
 

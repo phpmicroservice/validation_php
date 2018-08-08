@@ -1,13 +1,13 @@
 <?php
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
 
 /**
  * img 图片中文点击验证码
  * @author Dongasai
  */
-class img_cn implements \core\verify\driver
+class img_cn implements \app\logic\driver
 {
 
     private $msg = '请依次点击文字:';

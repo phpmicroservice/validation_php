@@ -1,6 +1,6 @@
 <?php
 
-namespace core\verify;
+namespace app\logic;
 
 
 interface  store

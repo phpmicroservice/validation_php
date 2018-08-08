@@ -1,6 +1,6 @@
 <?php
 
-namespace core\verify;
+namespace app\logic;
 
 /**
  * Class core 验证码的核心类

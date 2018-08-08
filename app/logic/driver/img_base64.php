@@ -1,22 +1,21 @@
 <?php
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
-use core\Sundry\Trace;
+
 
 /**
  * img 图片验证码生成驱动
  * @author Dongasai
  */
-class img_base64  implements \core\verify\driver
+class img_base64  implements \app\logic\driver
 {
 
-    private $width=80;
-    private $height=20;
+    private $width=100;
+    private $height=40;
     private $complex=4;
     private $type=1;
     private $stringent=false;
-
     private $im;
 
 
@@ -101,8 +100,7 @@ class img_base64  implements \core\verify\driver
 
         for ($i = 0; $i < $this->complex; $i++) {
             $color = imagecolorallocate($this->im, rand(50, 250), rand(100, 250), rand(128, 250));
-            $size = $this->height;
-
+            $size = 5;
             $x = floor($this->width / $this->complex) * $i + 5;
             $y = rand(0, $this->height - 20);
             imagechar($this->im, $size, $x, $y, $code{$i}, $color);
@@ -114,22 +112,26 @@ class img_base64  implements \core\verify\driver
      */
     private function show()
     {
+        $filename=RUNTIME_DIR.'/cache/'.uniqid();
+
         if (imagetypes() & IMG_JPG) {
-            header('Content-type:image/jpeg');
-            imagejpeg($this->im);
+            $filename.='.jpg';
+            imagejpeg($this->im,$filename);
         } elseif (imagetypes() & IMG_GIF) {
-            header('Content-type: image/gif');
-            imagegif($this->im);
+            $filename.='.gif';
+            imagegif($this->im,$filename);
         } elseif (imagetype() & IMG_PNG) {
-            header('Content-type: image/png');
-            imagepng($this->im);
+            $filename.='.png';
+            imagepng($this->im,$filename);
         } else {
             throw new \Phalcon\Exception('Don\'t support image type!');
-
         }
-        $i = ob_get_clean();
-        ob_start();
-        return base64_encode( $i );
+        var_dump($filename);
+        $fp = fopen($filename,"rb", 0);
+        $gambar = fread($fp,filesize($filename));
+        $re = base64_encode( $gambar );
+        unlink($filename);
+        return 'data:image/jpg/png/gif;base64,'.$re;
     }
 
     /**

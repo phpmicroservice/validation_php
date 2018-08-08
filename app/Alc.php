@@ -13,8 +13,12 @@ class Alc extends Base
 {
     public $user_id;
     public $serverTask = [
-        'server', 'index', 'transaction'
+        'server', 'transaction'
     ];
+    public $publicTask = [
+        'demo','index','imgbase64'
+    ];
+
 
     /**
      *
@@ -25,17 +29,20 @@ class Alc extends Base
      */
     public function beforeDispatch(\Phalcon\Events\Event $Event, \pms\Dispatcher $dispatcher)
     {
-        if ($dispatcher->getTaskName() == 'demo') {
-            return true;
-        }
+
         if (in_array($dispatcher->getTaskName(), $this->serverTask)) {
             # 进行服务间鉴权
             return $this->server_auth($dispatcher);
         }
+
         if (empty($dispatcher->session)) {
             $dispatcher->connect->send_error('没有初始化session!!', [], 500);
             return false;
         }
+        if (in_array($dispatcher->getTaskName(),$this->publicTask)) {
+            return true;
+        }
+
         # 进行rbac鉴权
         if ($dispatcher->session->get('user_id') > 0) {
             # 登录即可访问

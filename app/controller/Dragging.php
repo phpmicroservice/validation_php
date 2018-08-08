@@ -1,11 +1,11 @@
 <?php
 
-namespace apps\verify\controllers;
+namespace app\controller;
 
-use core\Sundry\Trace;
-use logic\Common\Verification;
 
-class ImgclickController extends CoreController
+use app\Controller;
+
+class Dragging extends Controller
 {
     public function initialize()
     {
@@ -16,23 +16,22 @@ class ImgclickController extends CoreController
     /**
      * 获取图形验证码
      */
-    public function getimg()
+    public function getinfo()
     {
 
         $config = [
-            'driver_name' => 'img_click',
+            'driver_name' => 'dragging',
             'store_name' => 'Sql',
             'identifying' => $this->identifying,
             'driver_config' => [
                 'width' => 100,
-                'height' => 100,
+                'height' => 15,
             ]
         ];
-        $CAPTCHA = new \core\verify\production($config);
+        $CAPTCHA = new \app\logic\production($config);
         $base64 = $CAPTCHA->getCaptcha();
-        return $this->restful_success($base64);
+        return $this->send($base64);
     }
-
 
 
 }

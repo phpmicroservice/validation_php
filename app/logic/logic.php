@@ -3,6 +3,7 @@
 namespace app\logic;
 
 use app\Base;
+use app\model\verify_operation;
 
 
 /**
@@ -13,32 +14,25 @@ use app\Base;
 class logic extends Base
 {
     /**
-     * 验证appid和业务id的正确性
-     * @param $appid 应用id
-     * @param $operation 业务id
+     * 服务名字和业务名字的正确性
+     * @param $sn 服务名字
+     * @param $operation
      * @return bool|string 正确返回true,失败返回string(失败原因)
      */
-    public function app_operation($appid, $operation)
+    public function app_operation($sn, $operation)
     {
-        //验证app
-        $appModel = \app\model\verify_apps::findFirstByid($appid);
-        if ($appModel instanceof \app\model\verify_apps) {
-
-        } else {
-            return '_app_id-error-' . $appid;
-        }
         //验证业务逻辑
-        $operationModel = model\verify_operation::findFirst([
-            'app_id =:appid: and id = :operation: ',
+        $operationModel = verify_operation::findFirst([
+            'sn =:sn: and operation = :operation: ',
             'bind' => [
-                'appid' => $appid,
+                'sn' => $sn,
                 'operation' => $operation
             ]
         ]);
-        if ($operationModel instanceof model\verify_operation) {
+        if ($operationModel instanceof verify_operation) {
 
         } else {
-            return '_operation-error';
+            return 'operation-error';
         }
 
         return true;
@@ -46,41 +40,53 @@ class logic extends Base
 
     /**
      * 获取验证码的类型和本次验证的唯一标示
-     * @param $HTTP_USER_AGENT 浏览器
      * @param $REMOTE_ADDR IP地址
      * @param $app_id 应用id
      * @param $operation_id 业务id
      * @return array
      */
-    public function verify_type($HTTP_USER_AGENT, $REMOTE_ADDR,
-                                $app_id, $operation_id
-    )
+    public function verify_type($browser, $ip, $sn, $operation)
     {
-
-        $array = [
+        $array_type = [
             'dragging', 'img_base64', 'ajax', 'img_click', 'img_cn',
         ];
         $biaoshi = uniqid();
-        $mt = mt_rand(1, 1);
+        $verify_operation = verify_operation::findFirst([
+            'sn =:sn: and operation =:operation:',
+            'bind' => [
+                'sn' => $sn,
+                'operation' => $operation
+            ]]);
+        if(!($verify_operation instanceof verify_operation)){
+            return 'error-sn-operation';
+        }
+        if(empty($verify_operation->type)){
+            $mt = mt_rand(0, 4);
+            $type = $array_type[$mt];
+        }else{
+            $type=$verify_operation->type;
+        }
+        #
 
         //写入日志
         $verify_logmodel = new \app\model\verify_log();
         $verify_logmodel->setData([
             'status' => 0,
-            'app_id' => $app_id,
-            'operation' => $operation_id,
+            'sn' => $sn,
+            'operation' => $operation,
             'time' => time(),
-            'browser' => $HTTP_USER_AGENT,
-            'ip' => $REMOTE_ADDR,
+            'ip' => $ip,
+            'browser' => $browser,
             'identifying' => $biaoshi,
-            'type' => $array[$mt]
+            'type' => $type
         ]);
         if ($verify_logmodel->save() === false) {
             return '_sql-error' . $verify_logmodel->getMessage();
         }
-        $this->session->set($biaoshi, 0);
+        $this->gCache->save($biaoshi, 0,600);
+
         return [
-            'type' => $array[$mt],
+            'type' => $type,
             'identifying' => $biaoshi
         ];
     }
@@ -116,7 +122,7 @@ class logic extends Base
      * @param $signature 验证签名
      * @return bool|string  验证结果
      */
-    public function true_check($identifying, $appid, $operation, $time, $signature)
+    public function true_check($identifying)
     {
 
         # 读取验证信息
@@ -124,52 +130,17 @@ class logic extends Base
         if (!($verify_logmodel instanceof \app\model\verify_log)) {
             return '_model-error-120';
         }
-        # 进行签名验证
-        $re121 = $this->check_signature($verify_logmodel->app_id, $time, $signature);
-        if (is_string($re121)) {
-            return $re121;
+        $verify_logmodel->status = 2;
+        if (($verify_logmodel->time + 600) < RUN_TIME) {
+            return '_over-tome';
         }
 
-
-        # 进行二次验证
-        $verify_logmodel = \app\model\verify_log::findFirstByidentifying($identifying);
-        if ($verify_logmodel->status === '1') {
-            $verify_logmodel->status = 2;
-
-            if (($verify_logmodel->time + 600) < RUN_TIME) {
-                return '_over-tome';
-            }
-
-            if ($verify_logmodel->save() === false) {
-                return '_sql-error';
-            }
-            $this->session->set($identifying, 2);
-            return true;
-        } else {
-            return '_status-error';
+        if ($verify_logmodel->save() === false) {
+            return '_sql-error';
         }
-    }
+        $this->gCache->save($identifying, 2);
+        return true;
 
-    /**
-     * 进行签名验证
-     * @param $app_id
-     * @param $time
-     * @param $signature
-     *
-     */
-    private function check_signature($app_id, $time, $signature)
-    {
-
-        $appModel = \app\model\verify_apps::findFirstById($app_id);
-        if (!($appModel instanceof \app\model\verify_apps)) {
-            return '_data-error';
-        }
-        $signature_new = sha1($time . $appModel->cipher);
-
-        if (strcasecmp($signature_new, $signature) === 0) {
-            return true;
-        }
-        return '_signature-error';
     }
 
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
 /**
  * img 图片验证码生成驱动
  * @author Dongasai
  */
-class img  implements \core\verify\driver
+class img  implements \app\logic\driver
 {
 
     private $width=80;

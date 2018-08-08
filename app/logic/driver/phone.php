@@ -6,10 +6,10 @@
  * Time: 22:47
  */
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
 
-class phone implements \core\verify\driver
+class phone implements \app\logic\driver
 {
     private $config = [
         'name' => '用户'

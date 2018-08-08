@@ -1,15 +1,14 @@
 <?php
 
-namespace core\verify\driver;
+namespace app\logic\driver;
 
-use core\Sundry\Trace;
 
 /**
  * 滑动 验证码
  * Class dragging
  * @package core\verify\driver
  */
-class dragging implements \core\verify\driver
+class dragging implements \app\logic\driver
 {
 
     private $width = 100;

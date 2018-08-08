@@ -1,14 +1,14 @@
 <?php
 
 namespace app\logic;
-use core\Sundry\Trace;
+use app\Base;
 
 /**
  * 验证码的生成
  * @author Dongasai
  * @property driver $driver
  */
-class production extends \core\CoreService
+class production extends Base
 {
     #配置信息
     protected $config = [
@@ -43,7 +43,7 @@ class production extends \core\CoreService
      */
     public function  __construct ($config)
     {
-        $validation = new \core\CoreValidation();
+        $validation = new \pms\Validation();
         $validation->validate();
         $this->config = array_merge($this->config, $config);
         foreach ($this->config as $name => $value) {
@@ -72,7 +72,7 @@ class production extends \core\CoreService
     protected final function getStore(): store
     {
         if (empty($this->store)) {
-            $class_name = '\core\verify\store\\' . $this->store_name;
+            $class_name = '\app\logic\store\\' . $this->store_name;
 
             $this->store = new $class_name();
         } else {
@@ -89,7 +89,7 @@ class production extends \core\CoreService
     private function getDriver(): driver
     {
         if (empty($this->driver)) {
-            $name = '\core\verify\driver\\' . $this->driver_name;
+            $name = 'app\logic\driver\\' . $this->driver_name;
 
             $this->driver = new $name($this->driver_config);
 

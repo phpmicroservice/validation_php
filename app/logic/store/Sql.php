@@ -1,9 +1,10 @@
 <?php
 
 
-namespace core\verify\store;
+namespace app\logic\store;
 
-use core\Sundry\Trace;
+use pms\Mvc\Model;
+
 
 /**
  *
@@ -11,7 +12,7 @@ use core\Sundry\Trace;
  * Class Sql
  * @package core\verifyCode\store
  */
-class Sql extends \core\CoreModel implements \core\verify\store
+class Sql extends Model implements \app\logic\store
 {
     public $code = '';
 
