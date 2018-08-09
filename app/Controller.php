@@ -60,7 +60,7 @@ class Controller extends \pms\Controller
             }
         }
         $this->lService = new \app\logic\logic();
-        $this->identifying_type=$this>$this->lService->get_type($this->identifying);
+        $this->identifying_type=$this->lService->get_type($this->identifying);
         //验证业务是够可用
 
 
