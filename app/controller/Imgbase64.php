@@ -30,7 +30,7 @@ class Imgbase64 extends Controller
         ];
         $CAPTCHA = new \app\logic\production($config);
         $base64 = $CAPTCHA->getCaptcha();
-        return $this->send($base64);
+        $this->connect->send_succee($base64, '成功');
     }
 
 
