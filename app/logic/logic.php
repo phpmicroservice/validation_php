@@ -3,6 +3,7 @@
 namespace app\logic;
 
 use app\Base;
+use app\model\verify_log;
 use app\model\verify_operation;
 
 
@@ -92,6 +93,20 @@ class logic extends Base
     }
 
     /**
+     * 获取当前验证的验证码类型
+     * @param $identifying
+     * @return \Phalcon\Mvc\Model\Resultset|\Phalcon\Mvc\Phalcon\Mvc\Model|string
+     */
+    public function get_type($identifying)
+    {
+        $verify_logmodel = \app\model\verify_log::findFirstByidentifying($identifying);
+        if($verify_logmodel instanceof verify_log){
+            return $verify_logmodel->type;
+        }
+        return '';
+    }
+
+    /**
      * 对验证进行虚拟通过
      * @param $identifying 验证标示
      */
@@ -122,13 +137,16 @@ class logic extends Base
      * @param $signature 验证签名
      * @return bool|string  验证结果
      */
-    public function true_check($identifying)
+    public function true_check($sn,$operation,$identifying)
     {
 
         # 读取验证信息
         $verify_logmodel = \app\model\verify_log::findFirstByidentifying($identifying);
         if (!($verify_logmodel instanceof \app\model\verify_log)) {
             return '_model-error-120';
+        }
+        if($verify_logmodel->sn != $sn || $verify_logmodel->operation != $operation){
+            return  'operation-error';
         }
         $verify_logmodel->status = 2;
         if (($verify_logmodel->time + 600) < RUN_TIME) {
@@ -138,7 +156,7 @@ class logic extends Base
         if ($verify_logmodel->save() === false) {
             return '_sql-error';
         }
-        $this->gCache->save($identifying, 2);
+        $this->gCache->save($identifying, 2,600);
         return true;
 
     }

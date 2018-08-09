@@ -21,6 +21,7 @@ class Controller extends \pms\Controller
     protected $sn; //模块名字
     protected $operation; //业务名字
     protected $identifying_app; //应用的唯一标示
+    protected $identifying_type; //本次验证的验证码类型
     protected $identifying; //本次验证的唯一标示
     protected $lService;//服务层的注入
 
@@ -59,6 +60,7 @@ class Controller extends \pms\Controller
             }
         }
         $this->lService = new \app\logic\logic();
+        $this->identifying_type=$this>$this->lService->get_type($this->identifying);
         //验证业务是够可用
 
 
