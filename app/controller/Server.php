@@ -20,6 +20,9 @@ class Server extends Controller
     public function true_check()
     {
         $value = $this->getData('value');
+        if(empty($this->identifying_type)){
+            return $this->send(false);
+        }
         # 增加图形验证码验证
         $config = [
             'driver_name' => $this->identifying_type,
