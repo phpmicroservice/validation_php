@@ -115,12 +115,15 @@ class img_base64  implements \app\logic\driver
         $filename=RUNTIME_DIR.'/cache/'.uniqid();
 
         if (imagetypes() & IMG_JPG) {
+            $houzhui='jpeg';
             $filename.='.jpg';
             imagejpeg($this->im,$filename);
         } elseif (imagetypes() & IMG_GIF) {
+            $houzhui='gif';
             $filename.='.gif';
             imagegif($this->im,$filename);
         } elseif (imagetype() & IMG_PNG) {
+            $houzhui='png';
             $filename.='.png';
             imagepng($this->im,$filename);
         } else {
@@ -131,7 +134,7 @@ class img_base64  implements \app\logic\driver
         $gambar = fread($fp,filesize($filename));
         $re = base64_encode( $gambar );
         unlink($filename);
-        return 'data:image/jpg/png/gif;base64,'.$re;
+        return 'data:image/'.$houzhui.';base64,'.$re;
     }
 
     /**
