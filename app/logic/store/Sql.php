@@ -49,7 +49,7 @@ class Sql extends Model implements \app\logic\store
             ];
             $this->setData($data);
             if ($this->save() === false) {
-                \output($this->getMessage(), 'info');
+               \pms\output($this->getMessage(), 'info');
                 return false;
             }
         }

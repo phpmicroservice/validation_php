@@ -126,7 +126,7 @@ class img_click  implements \app\logic\driver
     {
 
         // TODO: Implement check() method.
-        \output('production-check',[$code, $value]);
+       \pms\output('production-check',[$code, $value]);
         if (empty($code)) {
             return false;
         }

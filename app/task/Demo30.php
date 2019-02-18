@@ -16,7 +16,7 @@ class Demo30 extends Task implements TaskInterface
     public function run()
     {
         $aa = uniqid();
-        output([
+        \pms\output([
             __CLASS__,
             __FILE__, $aa
         ]);
@@ -26,7 +26,7 @@ class Demo30 extends Task implements TaskInterface
     public function end()
     {
         $aa = uniqid();
-        output([
+        \pms\output([
             'end',
             __CLASS__,
             __FUNCTION__, $aa

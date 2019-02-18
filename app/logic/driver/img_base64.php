@@ -145,7 +145,7 @@ class img_base64  implements \app\logic\driver
     public function check($code ,$value)
     {
         // TODO: Implement check() method.
-        \output('production-check',[$code, $value]);
+       \pms\output('production-check',[$code, $value]);
         if (empty($code)) {
             return false;
         }

@@ -62,7 +62,7 @@ class img_cn implements \app\logic\driver
             $x = abs($code_arr2[0] - $value_arr2[0]);
             $y = abs($code_arr2[1] - $value_arr2[1]);
             if (!($x < 10 && $y < 10)) {
-                \output('infoe', [$code_arr2, $value_arr2]);
+               \pms\output('infoe', [$code_arr2, $value_arr2]);
                 return false;
             }
         }
